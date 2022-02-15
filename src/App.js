@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React,{ Component } from "react";
+import TodoForm from "./components/TodoForm";
+import TodoList from "./components/TodoList";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      todos: [],
+    };
+  }
+
+  componentDidMount() {
+    const todos = JSON.parse(localStorage.getItem('todos')) || [];
+    this.setState({todos: todos});
+  }
+
+  addTodo(newTodo) {
+    const todos = this.state.todos;
+    todos.push(newTodo);
+    this.setState({todos: todos});
+    localStorage.setItem('todos', JSON.stringify(this.state.todos));
+  }
+
+  deleteTodo(i) {
+    const todos = this.state.todos;
+    todos.splice(i,1);
+    this.setState({todos: todos});
+    localStorage.setItem('todos', JSON.stringify(this.state.todos));
+  }
+
+  render() {
+    return (
+      <div>
+        <TodoForm add={this.addTodo.bind(this)}></TodoForm>
+        <TodoList todos={this.state.todos} del={this.deleteTodo.bind(this)}></TodoList>
+      </div>
+    );
+  }
 }
 
 export default App;
